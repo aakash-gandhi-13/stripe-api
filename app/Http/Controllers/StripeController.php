@@ -238,4 +238,80 @@ class StripeController extends Controller
         }
     }
 
+    //Payment Method APIs
+    public function listPaymentMethod(Request $request)
+    {
+        $params = $request->all();
+        $response = $this->stripe->paymentMethods->all($params);
+        $paymentMethods = $response->data;
+        
+        return response()->json($paymentMethods, 200);
+    }
+
+    public function readPaymentMethod(Request $request)
+    {
+        try {
+            $paymentMethod = $this->stripe->paymentMethods->retrieve($request->payment_method_id, []);
+            return response()->json($paymentMethod, 200);
+        } catch (\Exception $e) {
+            return response()->json($e->getMessage(), 400);
+        }
+    }
+
+    public function createPaymentMethod(Request $request)
+    {
+        $params = $request->all();
+        try {
+            $paymentMethod = $this->stripe->paymentMethods->create($params);
+            return response()->json($paymentMethod, 200);
+        } catch (\Exception $e) {
+            return response()->json($e->getMessage(), 400);
+        }
+    }
+
+    public function updatePaymentMethod(Request $request)
+    {
+        $params = $request->except('price_id');
+        $priceId = $request->price_id;
+        try {
+            $paymentMethod = $this->stripe->paymentMethods->update(
+                $priceId,
+                $params
+              );
+            return response()->json($paymentMethod, 200);
+        } catch (\Exception $e) {
+            return response()->json($e->getMessage(), 400);
+        }
+    }
+
+    public function attachPaymentMethodToCustomer(Request $request)
+    {
+        $params = $request->except('payment_method_id');
+        $paymentMethodId = $request->payment_method_id;
+        try {
+            $paymentMethod = $this->stripe->paymentMethods->attach(
+                $paymentMethodId,
+                $params
+              );
+            return response()->json($paymentMethod, 200);
+        } catch (\Exception $e) {
+            return response()->json($e->getMessage(), 400);
+        }
+    }
+
+    public function detachPaymentMethodToCustomer(Request $request)
+    {
+        $paymentMethodId = $request->payment_method_id;
+        try {
+            $paymentMethod = $this->stripe->paymentMethods->detach(
+                $paymentMethodId,
+                []
+              );
+            return response()->json($paymentMethod, 200);
+        } catch (\Exception $e) {
+            return response()->json($e->getMessage(), 400);
+        }
+    }
+
+
 }

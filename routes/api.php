@@ -42,3 +42,10 @@ Route::post('stripe/list/subscription', [StripeController::class, 'listSubscript
 Route::post('stripe/read/subscription', [StripeController::class, 'readSubscription']);
 Route::post('stripe/create/subscription', [StripeController::class, 'createSubscription']);
 Route::post('stripe/update/subscription', [StripeController::class, 'updateSubscription']);
+
+Route::post('stripe/list/payment-method', [StripeController::class, 'listPaymentMethod']);
+Route::post('stripe/read/payment-method', [StripeController::class, 'readPaymentMethod']);
+Route::post('stripe/create/payment-method', [StripeController::class, 'createPaymentMethod']);
+Route::post('stripe/update/payment-method', [StripeController::class, 'updatePaymentMethod']);
+Route::post('stripe/attach/payment-method', [StripeController::class, 'attachPaymentMethodToCustomer']);
+Route::post('stripe/detach/payment-method', [StripeController::class, 'detachPaymentMethodToCustomer']);
