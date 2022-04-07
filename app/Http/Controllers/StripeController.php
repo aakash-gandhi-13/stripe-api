@@ -230,7 +230,9 @@ class StripeController extends Controller
                 'items' => [
                   ['price' => $priceId],
                 ],
-                "collection_method" => "charge_automatically"
+                "collection_method" => "charge_automatically",
+                'payment_behavior' => 'default_incomplete',
+                'expand' => ['latest_invoice.payment_intent'],
               ]);
             return response()->json($customer, 200);
         } catch (\Exception $e) {
