@@ -49,3 +49,5 @@ Route::post('stripe/create/payment-method', [StripeController::class, 'createPay
 Route::post('stripe/update/payment-method', [StripeController::class, 'updatePaymentMethod']);
 Route::post('stripe/attach/payment-method', [StripeController::class, 'attachPaymentMethodToCustomer']);
 Route::post('stripe/detach/payment-method', [StripeController::class, 'detachPaymentMethodToCustomer']);
+
+Route::post('stripe/create/checkout-session', [StripeController::class, 'createSession']);

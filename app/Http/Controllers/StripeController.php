@@ -16,7 +16,7 @@ class StripeController extends Controller
     public function __construct()
     {
         $this->stripeBaseUrl = 'https://api.stripe.com/';
-        $this->stripe = new StripeClient("sk_test_51Kc0sFSIIbKkYlWUU0yGWFM7ZZUBxc4qhCEvOOqSokDhj6yQPypnKQLMOLp6gqJFhvPSGrtUA7wMwX4ASJWN3giI00WJFQK8SO");
+        $this->stripe = new StripeClient(env("STRIPE_API_KEY"));
     }
 
     // Customer APIs
@@ -315,5 +315,32 @@ class StripeController extends Controller
         }
     }
 
+
+    // Create Session for Checkout & Payment links work with frontend
+
+    public function createSession(Request $request)
+    {
+        $customerId = $request->customer_id;
+        $priceId = $request->price_id;
+        $mode = $request->mode; // payment / subscription
+        
+        try {
+            $customer = $this->stripe->checkout->sessions->create([
+                'success_url' => env('STRIPE_SUCCESS_URL'),
+                'cancel_url' => env('STRIPE_CANCEL_URL'),
+                'customer' => $customerId,
+                'line_items' => [
+                    [
+                    'price' => $priceId,
+                    'quantity' => 1,
+                    ],
+                ],
+                'mode' => $mode,
+              ]);
+            return response()->json($customer, 200);
+        } catch (\Exception $e) {
+            return response()->json($e->getMessage(), 400);
+        }
+    }
 
 }
