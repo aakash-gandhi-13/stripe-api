@@ -343,4 +343,20 @@ class StripeController extends Controller
         }
     }
 
+    public function stripeWebHooks(Request $request)
+    {
+        dd($request->all());
+        // Handle the event
+        // Need to write database / api logic here
+        // switch ($event->type) {
+        //     case 'customer.subscription.created':
+        //     $subscription = $event->data->object;
+        //     case 'customer.subscription.updated':
+        //     $subscription = $event->data->object;
+        //     // ... handle other event types
+        //     default:
+        //     echo 'Received unknown event type ' . $event->type;
+        // }
+    }
+
 }
