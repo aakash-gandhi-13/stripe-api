@@ -380,7 +380,7 @@ class StripeController extends Controller
     {
         $subscriptionId = $request->data['object']['id'];
         $subscriptionStart = $request->data['object']['current_period_start'];
-        $subscribtionEnd = Carbon::parse($subscriptionStart)->addDays(90)->getTimestamp();
+        $subscribtionEnd = Carbon::parse($subscriptionStart)->addMonths(67)->getTimestamp();
         
         try {
             $subscription = $this->stripe->subscriptions->update(
