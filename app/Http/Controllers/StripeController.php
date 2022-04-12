@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Traits\CustomResponse;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Stripe\StripeClient;
 
@@ -240,6 +241,21 @@ class StripeController extends Controller
         }
     }
 
+    public function updateSubscription(Request $request)
+    {
+        $params = $request->except('subscription_id');
+        $subscriptionId = $request->subscription_id;
+        try {
+            $subscription = $this->stripe->subscriptions->update(
+                $subscriptionId,
+                $params
+              );
+            return response()->json($subscription, 200);
+        } catch (\Exception $e) {
+            return response()->json($e->getMessage(), 400);
+        }
+    }
+
     //Payment Method APIs
     public function listPaymentMethod(Request $request)
     {
@@ -345,7 +361,8 @@ class StripeController extends Controller
 
     public function stripeWebHooks(Request $request)
     {
-        dd($request->all());
+        //dd($request->all());
+
         // Handle the event
         // Need to write database / api logic here
         // switch ($event->type) {
@@ -357,6 +374,30 @@ class StripeController extends Controller
         //     default:
         //     echo 'Received unknown event type ' . $event->type;
         // }
+    }
+
+    public function hookSubscriptionCreated(Request $request)
+    {
+        $subscriptionId = $request->data['object']['id'];
+        $subscriptionStart = $request->data['object']['current_period_start'];
+        $subscribtionEnd = Carbon::parse($subscriptionStart)->addDays(90)->getTimestamp();
+        
+        try {
+            $subscription = $this->stripe->subscriptions->update(
+                $subscriptionId,
+                [
+                    // 'cancel_at_period_end' => false,
+                'cancel_at' => $subscribtionEnd]
+              );
+            return response()->json($subscription, 200);
+        } catch (\Exception $e) {
+            return response()->json($e->getMessage(), 400);
+        }
+    }
+
+    public function hookSubscriptionUpdated(Request $request)
+    {
+        
     }
 
 }

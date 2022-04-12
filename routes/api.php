@@ -53,3 +53,4 @@ Route::post('stripe/detach/payment-method', [StripeController::class, 'detachPay
 Route::post('stripe/create/checkout-session', [StripeController::class, 'createSession']);
 
 Route::post('stripe/listen/web-hooks', [StripeController::class, 'stripeWebHooks']);
+Route::post('stripe/listen/subscription-created', [StripeController::class, 'hookSubscriptionCreated']);
